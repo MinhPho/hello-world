@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dagster
+/tmp/dagster/
+storage/
+history/
+schedules/
+.dagster_home/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data & artifacts (local dev)
+data/raw/*
+data/processed/*
+data/artifacts/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/artifacts/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Coverage & testing
+htmlcov/
+.coverage
+.pytest_cache/
+.mypy_cache/

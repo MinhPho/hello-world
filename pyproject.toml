@@ -1,0 +1,92 @@
+[project]
+name = "dagster-ray-platform"
+version = "0.1.0"
+description = "Data & ML platform orchestrated by Dagster with Ray as distributed processing engine"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    # Dagster core
+    "dagster>=1.9,<2.0",
+    "dagster-webserver>=1.9,<2.0",
+    "dagster-postgres>=0.25",
+
+    # Ray ecosystem
+    "ray[default]>=2.38,<3.0",
+    "dagster-ray>=0.2",
+
+    # Data processing
+    "ray[data]>=2.38,<3.0",
+    "pyarrow>=17.0",
+    "pandas>=2.2",
+
+    # ML
+    "ray[train]>=2.38,<3.0",
+    "ray[serve]>=2.38,<3.0",
+    "scikit-learn>=1.5",
+
+    # Storage & IO
+    "fsspec>=2024.6",
+    "s3fs>=2024.6",
+
+    # Utilities
+    "pydantic>=2.0,<3.0",
+    "structlog>=24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "dagster-webserver>=1.9,<2.0",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.7",
+    "mypy>=1.11",
+    "pre-commit>=3.8",
+    "ipython>=8.0",
+]
+kuberay = [
+    "dagster-ray[kuberay]>=0.2",
+    "kubernetes>=30.0",
+]
+
+[build-system]
+requires = ["setuptools>=75.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.dagster]
+module_name = "platform_pipelines.definitions"
+code_location_name = "dagster_ray_platform"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["platform_pipelines"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+plugins = []
+
+[[tool.mypy.overrides]]
+module = ["ray.*", "dagster_ray.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --tb=short"
+markers = [
+    "unit: Unit tests (no external dependencies)",
+    "integration: Integration tests (requires Ray cluster)",
+    "slow: Slow tests",
+]

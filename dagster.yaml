@@ -1,0 +1,45 @@
+# Dagster instance configuration for local development.
+# This file configures the Dagster daemon, run storage, event log, etc.
+# For production, these are typically set via Helm chart values or environment variables.
+# See: https://docs.dagster.io/deployment/dagster-instance
+
+# Run storage: where run metadata is persisted
+storage:
+  postgres:
+    postgres_db:
+      username:
+        env: DAGSTER_PG_USERNAME
+      password:
+        env: DAGSTER_PG_PASSWORD
+      hostname:
+        env: DAGSTER_PG_HOST
+      db_name:
+        env: DAGSTER_PG_DB
+      port:
+        env: DAGSTER_PG_PORT
+
+# Run coordinator settings
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 5
+
+# Compute log storage (stdout/stderr from runs)
+compute_logs:
+  module: dagster.core.storage.local_compute_log_manager
+  class: LocalComputeLogManager
+  config:
+    base_dir: /tmp/dagster/compute-logs
+
+# Local event log storage (falls back to SQLite when Postgres is unavailable)
+# Uncomment below to override with SQLite for truly minimal local dev:
+# event_log_storage:
+#   module: dagster.core.storage.event_log
+#   class: SqliteEventLogStorage
+#   config:
+#     base_dir: /tmp/dagster/event-logs
+
+# Telemetry opt-out for local development
+telemetry:
+  enabled: false

@@ -1,0 +1,51 @@
+# Base Helm values shared across all DTAP environments.
+#
+# This file is NOT a full Helm chart — it documents the configuration
+# structure you would use with the official dagster Helm chart:
+#   https://docs.dagster.io/deployment/guides/kubernetes/deploying-with-helm
+#
+# Usage:
+#   helm install dagster dagster/dagster \
+#     -f deploy/helm/values-base.yaml \
+#     -f deploy/helm/values-<env>.yaml
+
+dagster-user-deployments:
+  deployments:
+    - name: dagster-ray-platform
+      image:
+        repository: your-registry/dagster-ray-platform
+        tag: latest
+        pullPolicy: Always
+      dagsterApiGrpcArgs:
+        - "-m"
+        - "platform_pipelines.definitions"
+      port: 3030
+      envSecrets:
+        - name: dagster-platform-secrets
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+
+dagsterDaemon:
+  enabled: true
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+
+dagsterWebserver:
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+
+postgresql:
+  enabled: true
+  auth:
+    username: dagster
+    database: dagster
+    existingSecret: dagster-postgres-secret

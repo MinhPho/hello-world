@@ -1,0 +1,20 @@
+# Custom Ray image with platform dependencies pre-installed.
+#
+# This image is used as the base for Ray worker/head nodes so that
+# remote tasks have access to the same packages as the Dagster code.
+#
+# Build: docker build -f deploy/docker/Dockerfile.ray -t dagster-ray-worker .
+
+FROM rayproject/ray:2.38.0-py310
+
+WORKDIR /app
+
+# Install platform dependencies
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
+
+# Copy source (needed for Ray tasks that import platform code)
+COPY src/ src/
+
+# Copy Ray job scripts
+COPY ray_jobs/ ray_jobs/

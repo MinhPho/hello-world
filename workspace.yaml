@@ -1,0 +1,10 @@
+# Dagster OSS workspace configuration
+# Defines code locations for the Dagster webserver/daemon to load.
+# Each code location is an isolated Python environment with its own set of definitions.
+# See: https://docs.dagster.io/deployment/oss/oss-deployment-architecture
+
+load_from:
+  - python_module:
+      module_name: platform_pipelines.definitions
+      location_name: dagster_ray_platform
+      working_directory: .
